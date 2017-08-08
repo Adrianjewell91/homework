@@ -27,6 +27,7 @@ describe Board do
     it "fills the non-store cups with four stones" do
       expect(board.cups[6] && board.cups[13]).to be_empty
       expect(board.cups[0..5]).to all( eq(four_stone_cup) )
+      expect(board.cups[7..12]).to all( eq(four_stone_cup) )
     end
   end
 
@@ -42,11 +43,11 @@ describe Board do
       end.to raise_error("Invalid starting cup")
     end
 
-    # it "raises 'Invalid starting cup' error if the entered position is not on the board" do
-    #   expect do
-    #     board.valid_move?(0)
-    #   end.to raise_error("Invalid starting cup")
-    # end
+    it "raises 'Invalid starting cup' error if the entered position is not on the board" do
+      expect do
+        board.valid_move?(0)
+      end.to raise_error("Invalid starting cup")
+    end
   end
 
 
