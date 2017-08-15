@@ -33,11 +33,11 @@ class Play
   end
 
   def self.find_by_playwright(name)
-    playwright_id = Playwright.find_by_name(name)
+    playwright = Playwright.find_by_name(name)
     raise "not in db" unless playwright
-    plays = PlayDBConnection.instance.execute(<<-SQL, playwright_id)
+    plays = PlayDBConnection.instance.execute(<<-SQL, playwright.id)
       SELECT
-        title
+        *
       FROM
         plays
       WHERE
@@ -89,14 +89,14 @@ class Playwright
   def self.find_by_name(name)
     playwright = PlayDBConnection.instance.execute(<<-SQL, name)
     SELECT
-      name
+      *
     FROM
       playwrights
     WHERE
       name = ?
     SQL
     return nil unless playwright.length > 0
-    playwright
+    Playwright.new(playwright.first)
   end
 
   def initialize(options)
@@ -132,7 +132,7 @@ class Playwright
     raise "not in db" unless @id
     plays= PlayDBConnection.instance.execute(<<-SQL, @name)
       SELECT
-        title
+        *
       FROM
         plays
       JOIN
