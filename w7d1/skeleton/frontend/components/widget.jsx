@@ -12,6 +12,7 @@ class Widget extends React.Component {
     this.props.store.subscribe(this.forceUpdate);
     this.currencies = ["USD", "EUR", "CAD", "JPY", "GBP", "CNY"];
     this.selectCurrency = selectCurrency.bind(this);
+    // console.log();
   }
 
   fetchRates(currency) {
@@ -36,7 +37,8 @@ class Widget extends React.Component {
     // get the store's current state and deconstruct it into 'rates'
     // and 'baseCurrency' variables
     const { rates, baseCurrency } = this.props.store.getState();
-
+    console.log(this.props.store.getState());
+    console.log(rates);
     const currencyOptions = this.currencies.map( (currency) => (
         <div onClick={ () => { this.fetchRates(currency) }}
              key={currency}
