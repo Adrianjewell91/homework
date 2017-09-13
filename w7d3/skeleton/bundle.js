@@ -6950,11 +6950,35 @@ if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' 
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.fetchSearchGiphys = exports.receiveSearchGiphys = exports.REQUEST_SEARCH_GIPHYS = exports.RECEIVE_SEARCH_GIPHYS = undefined;
+
 var _api_util = __webpack_require__(115);
 
 var APIUtil = _interopRequireWildcard(_api_util);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var RECEIVE_SEARCH_GIPHYS = exports.RECEIVE_SEARCH_GIPHYS = 'RECEIVE_SEARCH_GIPHYS';
+
+var REQUEST_SEARCH_GIPHYS = exports.REQUEST_SEARCH_GIPHYS = 'REQUEST_SEARCH_GIPHYS';
+
+var receiveSearchGiphys = exports.receiveSearchGiphys = function receiveSearchGiphys(giphys) {
+  return {
+    type: RECEIVE_SEARCH_GIPHYS,
+    giphys: giphys
+  };
+};
+
+var fetchSearchGiphys = exports.fetchSearchGiphys = function fetchSearchGiphys(searchTerm) {
+  return function (dispatch) {
+    APIUtil.fetchSearchGiphys(searchTerm).then(function (giphys) {
+      return dispatch(receiveSearchGiphys(giphys.data));
+    });
+  };
+};
 
 /***/ }),
 /* 59 */
@@ -12063,6 +12087,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _redux = __webpack_require__(57);
 
 var _reduxThunk = __webpack_require__(209);
@@ -12074,6 +12102,12 @@ var _root_reducer = __webpack_require__(114);
 var _root_reducer2 = _interopRequireDefault(_root_reducer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var configureStore = function configureStore() {
+  return (0, _redux.createStore)(_root_reducer2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default));
+};
+
+exports.default = configureStore;
 
 /***/ }),
 /* 107 */
@@ -12166,17 +12200,21 @@ var _root = __webpack_require__(105);
 
 var _root2 = _interopRequireDefault(_root);
 
-var _api_util = __webpack_require__(115);
-
-var _api_util2 = _interopRequireDefault(_api_util);
+var _giphy_actions = __webpack_require__(58);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 document.addEventListener('DOMContentLoaded', function () {
+  var store = (0, _store2.default)();
+  window.store = store;
+  window.fetchSearchGiphys = _giphy_actions.fetchSearchGiphys;
+  window.receiveSearchGiphys = _giphy_actions.receiveSearchGiphys;
+
   // const root = document.getElementById('root');
   // ReactDOM.render(<Root/>, root);
-  window.fetchSearchGiphys = _api_util2.default;
 });
+
+// import fetchSearchGiphys from "./util/api_util";
 
 /***/ }),
 /* 113 */
@@ -12185,7 +12223,26 @@ document.addEventListener('DOMContentLoaded', function () {
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _giphy_actions = __webpack_require__(58);
+
+var GiphysReducer = function GiphysReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var action = arguments[1];
+
+  Object.freeze(state);
+  switch (action.type) {
+    case _giphy_actions.RECEIVE_SEARCH_GIPHYS:
+      return action.giphys;
+    default:
+      return state;
+  }
+};
+
+exports.default = GiphysReducer;
 
 /***/ }),
 /* 114 */
@@ -12194,6 +12251,10 @@ var _giphy_actions = __webpack_require__(58);
 "use strict";
 
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _redux = __webpack_require__(57);
 
 var _giphys_reducer = __webpack_require__(113);
@@ -12201,6 +12262,10 @@ var _giphys_reducer = __webpack_require__(113);
 var _giphys_reducer2 = _interopRequireDefault(_giphys_reducer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = (0, _redux.combineReducers)({
+  giphys: _giphys_reducer2.default
+});
 
 /***/ }),
 /* 115 */
@@ -12212,14 +12277,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var fetchSearchGiphys = function fetchSearchGiphys(searchTerm) {
+var fetchSearchGiphys = exports.fetchSearchGiphys = function fetchSearchGiphys(searchTerm) {
   return $.ajax({
     method: 'GET',
     url: 'http://api.giphy.com/v1/gifs/search?q=' + searchTerm + '&api_key=dc6zaTOxFJmzC&limit=2'
   });
 };
-
-exports.default = fetchSearchGiphys;
 
 /***/ }),
 /* 116 */
